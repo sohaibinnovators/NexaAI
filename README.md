@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NexaAI
+
+**One Workspace. Smarter AI.**
+
+NexaAI is a modern AI Tools Hub that brings eight Gemini-powered productivity tools into one professional SaaS-style workspace. It is designed as a portfolio-ready Next.js application with secure server-side AI integration, local history/usage tracking, and light/dark themes.
+
+## Features
+
+- **AI Chat** — multi-turn conversations with local conversation history
+- **AI Writer** — blogs, articles, social posts, and more
+- **Document Summarizer** — short, medium, and detailed summaries from pasted text
+- **Translator** — multi-language translation with Auto Detect
+- **Grammar Checker** — corrections, clarity improvements, and rewrite tones
+- **Email Assistant** — purpose-driven email drafts with revise actions
+- **Code Assistant** — explain, debug, improve, refactor, and generate (never executes code)
+- **Resume & Cover Letter Builder** — honest drafts from user-supplied details only
+- **History, Favorites & Usage** — browser-local activity tracking (not Gemini billing/quota)
+- **Settings** — theme, AI defaults, profile, and data management
+
+## Tech Stack
+
+- Next.js (App Router) + React + TypeScript
+- Tailwind CSS
+- Google Gen AI SDK (`@google/genai`)
+- Lucide icons
+- `react-markdown` for assistant/code output formatting
 
 ## Getting Started
 
-First, run the development server:
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Configure environment variables
+
+Copy the example env file and add your Gemini API key from [Google AI Studio](https://aistudio.google.com/apikey):
+
+```bash
+cp .env.example .env.local
+```
+
+Required values:
+
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_MODEL=gemini-3.8-flash
+```
+
+Notes:
+
+- Store the key only in `.env.local` (server-side).
+- Never use a `NEXT_PUBLIC_` prefix for the API key.
+- `.env.local` is gitignored and must not be committed.
+
+### 3. Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4. Production build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+### Useful scripts
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run lint
+npm run build
+npm run start
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Architecture Notes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Chat requests go through `POST /api/chat`
+- Tool requests go through `POST /api/tools`
+- Gemini is called only on the server via `lib/gemini/*`
+- Browser storage holds history, favorites, usage, preferences, and chat conversations locally
+- Local usage metrics are informational only and are not official Gemini quota/billing data
 
-## Deploy on Vercel
+## Deployment (Vercel)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Push the repository to GitHub/GitLab/Bitbucket (without `.env.local`).
+2. Import the project in [Vercel](https://vercel.com/new).
+3. Set environment variables in the Vercel project settings:
+   - `GEMINI_API_KEY`
+   - `GEMINI_MODEL` (recommended: `gemini-3.8-flash`)
+4. Deploy. Vercel detects Next.js automatically; no special `vercel.json` is required for the default setup.
+5. After deploy, open the site and verify Chat + one tool request succeed.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Security
+
+- API keys stay server-side.
+- API routes validate payloads and return structured errors without stack traces.
+- User content is rendered with React/`react-markdown` (no raw HTML plugin).
+- Code Assistant never executes submitted code.
+
+## License
+
+Private project / portfolio demonstration.
